@@ -1,7 +1,7 @@
 ShopBundle\Entity\Category:
     type: entity
     table: null
-    repositoryClass: ShopBundle\Repository\CategoryRepository
+    repositoryClass: ShopBundle\Repository\Category\CategoryRepository
     id:
         id:
             type: integer

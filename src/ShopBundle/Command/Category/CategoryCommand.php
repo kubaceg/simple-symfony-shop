@@ -1,28 +1,19 @@
 <?php
 declare(strict_types=1);
-
-namespace ShopBundle\Entity;
-
 /**
- * Category
+ * @author Jakub Cegiełka <kuba.ceg@gmail.com>
  */
-class Category
-{
-    /** @var int */
-    private $id;
 
+namespace ShopBundle\Command\Category;
+
+class CategoryCommand
+{
     /** @var string */
     private $name;
-
 
     public function __construct(string $name)
     {
         $this->name = $name;
-    }
-
-    public function getId(): int
-    {
-        return $this->id;
     }
 
     public function getName(): string
@@ -30,4 +21,3 @@ class Category
         return $this->name;
     }
 }
-
