@@ -1,0 +1,17 @@
+ShopBundle\Entity\Tax:
+    type: entity
+    table: null
+    repositoryClass: ShopBundle\Repository\Tax\TaxRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        rate:
+            type: float
+    lifecycleCallbacks: {  }

@@ -18,6 +18,7 @@ class TestBase extends WebTestCase
 
         $this->loadFixtures([
             'ShopBundle\DataFixtures\ORM\CreateCategories',
+            'ShopBundle\DataFixtures\ORM\CreateTax',
         ]);
     }
 }

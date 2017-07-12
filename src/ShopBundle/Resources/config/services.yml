@@ -10,10 +10,22 @@ services:
     arguments:
       - ShopBundle:Category
 
-
   shop.category_create_handler:
       class: ShopBundle\CommandHandler\Category\CreateCategory
       arguments:
           - '@shop.category_repository'
       tags:
           - { name: tactician.handler, command: ShopBundle\Command\Category\CategoryCommand, bus: queued }
+
+  shop.tax_repository:
+    class: ShopBundle\Repository\Tax\TaxRepository
+    factory: ['@doctrine', getRepository]
+    arguments:
+      - ShopBundle:Tax
+
+  shop.tax_create_handler:
+      class: ShopBundle\CommandHandler\Tax\CreateTax
+      arguments:
+          - '@shop.tax_repository'
+      tags:
+          - { name: tactician.handler, command: ShopBundle\Command\Tax\CreateTaxCommand, bus: queued }
