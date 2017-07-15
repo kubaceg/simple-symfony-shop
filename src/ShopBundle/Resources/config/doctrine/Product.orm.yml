@@ -1,0 +1,31 @@
+ShopBundle\Entity\Product:
+    type: entity
+    table: null
+    repositoryClass: ShopBundle\Repository\Product\ProductRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        price:
+            type: integer
+    manyToOne:
+      tax:
+        targetEntity: ShopBundle\Entity\Tax
+        joinColumn:
+          name: tax_id
+          referencedColumnName: id
+      category:
+        targetEntity: ShopBundle\Entity\Category
+        joinColumn:
+          name: category_id
+          referencedColumnName: id
+
+
+
+    lifecycleCallbacks: {  }
