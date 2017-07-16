@@ -45,3 +45,15 @@ services:
       arguments:
         - '@doctrine.orm.default_entity_manager'
         - '@shop.product_read_model_factory'
+
+  shop.cart_service:
+      class: ShopBundle\Service\Cart\SessionCartService
+      arguments:
+        - '@session'
+        - 'cart'
+        - '@shop.cart_serializer'
+
+  shop.cart_serializer:
+      class: ShopBundle\Service\Cart\JMSCartSerializer
+      arguments:
+        - '@jms_serializer'

@@ -68,3 +68,14 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+
+jms_serializer:
+    metadata:
+        auto_detection: true
+        directories:
+            ShopBundle:
+                namespace_prefix: "ShopBundle"
+                path: "@ShopBundle/Resources/config/serializer"
+            Money:
+                namespace_prefix: "Money"
+                path: "@ShopBundle/Resources/config/serializerMoney"

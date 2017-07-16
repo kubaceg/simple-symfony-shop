@@ -1,0 +1,9 @@
+Money\Money:
+    exclusion_policy: ALL
+    properties:
+        amount:
+            expose: true
+            type: string
+        currency:
+            expose: true
+            type: Money\Currency
