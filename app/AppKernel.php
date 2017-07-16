@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new ShopBundle\ShopBundle(),
             new League\Tactician\Bundle\TacticianBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
+            new UIHtmlBundle\UIHtmlBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

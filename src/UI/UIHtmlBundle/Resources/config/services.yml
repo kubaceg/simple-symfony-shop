@@ -1,0 +1,6 @@
+services:
+    app.twig_extension:
+        class: UIHtmlBundle\Twig\Price
+        public: false
+        tags:
+            - { name: twig.extension }

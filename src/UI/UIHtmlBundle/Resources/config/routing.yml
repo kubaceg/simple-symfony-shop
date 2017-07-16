@@ -1,0 +1,19 @@
+ui_html_homepage:
+    path:     /
+    defaults: { _controller: UIHtmlBundle:Default:index }
+
+ui_html_cart:
+    path:     /cart
+    defaults: { _controller: UIHtmlBundle:Default:cart }
+
+ui_html_add_to_cart:
+    path:     /addToCart/{productId}
+    defaults: { _controller: UIHtmlBundle:Default:addToCart }
+    requirements:
+      productId: '\d+'
+
+ui_html_remove_from_cart:
+    path:     /removeFromCart
+    defaults: { _controller: UIHtmlBundle:Default:removeFromCart }
+    requirements:
+      productId: '\d+'
