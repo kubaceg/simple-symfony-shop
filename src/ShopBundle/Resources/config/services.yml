@@ -19,7 +19,7 @@ services:
       - ShopBundle:Tax
 
   shop.product_repository:
-   class: ShopBundle\Repository\Product\ProductRepository
+      class: ShopBundle\Repository\Product\ProductRepository
       factory: ['@doctrine', getRepository]
       arguments:
         - ShopBundle:Product
