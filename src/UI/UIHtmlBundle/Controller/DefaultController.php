@@ -3,6 +3,9 @@
 namespace UIHtmlBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use UI\UIHtmlBundle\Form\CartType;
+use UI\UIHtmlBundle\Model\CartItems;
 
 class DefaultController extends Controller
 {
@@ -19,7 +22,13 @@ class DefaultController extends Controller
         $cartProducts = $this->get('shop.cart_service')->getCartProducts();
         $cartCount = $this->get('shop.cart_service')->countProductsInCart();
 
-        return $this->render('@UIHtml/Default/cart.html.twig', ['products' => $cartProducts, 'cartCount' => $cartCount]);
+        $arrayCollection = new CartItems($cartProducts);
+        $form = $this->createForm(CartType::class, $arrayCollection, [
+            'action' => $this->generateUrl('ui_html_cart_update'),
+        ]);
+
+        return $this->render('@UIHtml/Default/cart.html.twig',
+            ['cartCount' => $cartCount, 'form' => $form->createView(), 'products' => $cartProducts]);
     }
 
     public function addToCartAction($productId)
@@ -30,10 +39,20 @@ class DefaultController extends Controller
         return $this->redirectToRoute('ui_html_homepage');
     }
 
-    public function removeFromCartAction($productId)
+    public function cartUpdateAction(Request $request)
     {
-        $this->get('shop.cart_service')->removeProductFromCart($productId);
+        $cartData = $request->get('cart');
+        if (is_array($cartData)) {
+            $cartService = $this->get('shop.cart_service');
+            $productsToDelete = [];
+            foreach ($request->get('cart')['items'] as $id => $item) {
+                if ($item['delete'] == 1) {
+                    $productsToDelete[] = $id;
+                }
+            }
+            $cartService->removeProductsFromCart($productsToDelete);
+        }
 
-        return $this->redirect($this->getRequest()->headers->get('referer'));
+        return $this->redirectToRoute('ui_html_cart');
     }
 }

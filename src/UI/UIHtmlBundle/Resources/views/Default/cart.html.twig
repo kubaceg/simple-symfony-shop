@@ -6,26 +6,32 @@
 
 {% block body %}
     <div class="row">
-        {% for product in products %}
-            <div class="col-sm-4">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">{{ product.name }}</div>
-                    <div class="panel-body">
-                        <p><strong>Category name: </strong>{{ product.categoryName }}</p>
-                        <p><strong>Tax rate name: </strong>{{ product.taxName }}</p>
-                        <p><strong>Tax rate: </strong>{{ product.taxRate | number_format }}%</p>
-                    </div>
-                    <div class="panel-footer">
-                        <p><strong>Price: </strong>{{ product.price | price }}</p>
-                        <p><strong>Price with tax: </strong>{{ product.priceWithTax | price }}</p>
-                        <p>
-                            <a href="{{ url('ui_html_remove_from_cart', {'productId': product.id}) }}" class="btn btn-white btn-danger active">
-                                <i class="glyphicon glyphicon-shopping-cart"></i> Remove from cart
-                            </a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
+        {{ form_start(form) }}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Product name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Price with tax</th>
+                    <th>Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for id, item in form.items %}
+                        <tr>
+                            <td>{{ products[id].name }}</td>
+                            <td>{{ products[id].categoryName }}</td>
+                            <td>{{ products[id].price | price }}</td>
+                            <td>{{ products[id].priceWithTax | price }} ({{ products[id].taxName }})</td>
+                            <td>{{ form_widget(item.delete) }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p>
+                {{ form_widget(form.submit) }}
+            </p>
+        {{ form_end(form) }}
     </div>
 {% endblock %}

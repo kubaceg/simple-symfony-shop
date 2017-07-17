@@ -12,8 +12,7 @@ ui_html_add_to_cart:
     requirements:
       productId: '\d+'
 
-ui_html_remove_from_cart:
-    path:     /removeFromCart
-    defaults: { _controller: UIHtmlBundle:Default:removeFromCart }
-    requirements:
-      productId: '\d+'
+ui_html_cart_update:
+    path:     /cartUpdate
+    defaults: { _controller: UIHtmlBundle:Default:cartUpdate }
+    methods: [POST]
