@@ -40,31 +40,16 @@ class Tax
         $this->rate = $rate;
     }
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Get name
-     *
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * Get rate
-     *
-     * @return float
-     */
     public function getRate(): float
     {
         return $this->rate;

@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace ShopBundle\Entity;
 
+use ShopBundle\Exception\Category\InvalidCategoryName;
+
 /**
  * Category
  */
@@ -17,6 +19,10 @@ class Category
 
     public function __construct(string $name)
     {
+        if(empty($name)) {
+            throw new InvalidCategoryName();
+        }
+
         $this->name = $name;
     }
 
