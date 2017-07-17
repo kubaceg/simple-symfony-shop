@@ -6,14 +6,14 @@ shop
 PHP 7.1
 ```
 
-###USAGE
+### USAGE
 ```
 composer install
 php bin/console doctrine:schema:create
 php bin/console doctrine:fixtures:load
 ```
 
-###TESTS
+### TESTS
 ```
 php bin/phpunit 
 ```
