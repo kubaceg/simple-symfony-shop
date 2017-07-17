@@ -36,11 +36,19 @@ class SessionCartService implements CartInterface
 
     public function removeProductFromCart(int $productId)
     {
+        $this->removeProductsFromCart([$productId]);
+    }
+
+    public function removeProductsFromCart(array $productIds)
+    {
         $cart = $this->getCartFromSession();
-        if (isset($cart[$productId])) {
-            unset($cart[$productId]);
-            $this->saveCartInSession($cart);
+        foreach ($productIds as $productId) {
+            if (isset($cart[$productId])) {
+                unset($cart[$productId]);
+            }
         }
+
+        $this->saveCartInSession($cart);
     }
 
     public function getCartProducts(): array
