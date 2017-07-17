@@ -39,6 +39,7 @@
     },
     "require-dev": {
         "doctrine/data-fixtures": "^1.2",
+        "doctrine/doctrine-fixtures-bundle": "^2.3",
         "liip/functional-test-bundle": "^1.8",
         "phpunit/phpunit": "^6.2",
         "sensio/generator-bundle": "^3.0",
@@ -62,7 +63,8 @@
     },
     "config": {
         "sort-packages": true,
-        "bin-dir": "bin"
+        "bin-dir": "bin",
+        "optimize-autoloader": true
     },
     "extra": {
         "symfony-app-dir": "app",
