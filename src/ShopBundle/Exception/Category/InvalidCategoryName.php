@@ -6,7 +6,7 @@
 namespace ShopBundle\Exception\Category;
 
 
-class InvalidCategoryName extends \Exception
+class InvalidCategoryName extends \InvalidArgumentException
 {
     public function __construct()
 {

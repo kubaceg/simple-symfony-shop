@@ -5,7 +5,7 @@
 
 namespace ShopBundle\Exception\Tax;
 
-class InvalidTaxName extends \Exception
+class InvalidTaxName extends \InvalidArgumentException
 {
     public function __construct()
     {
