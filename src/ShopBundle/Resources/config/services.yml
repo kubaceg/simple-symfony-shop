@@ -1,9 +1,4 @@
 services:
-  shop.default_controller:
-    class: ShopBundle\Controller\DefaultController
-    arguments:
-        - '@tactician.commandbus.default'
-
   shop.category_repository:
     class: ShopBundle\Repository\Category\CategoryRepository
     factory: ['@doctrine', getRepository]
@@ -22,6 +17,19 @@ services:
     factory: ['@doctrine', getRepository]
     arguments:
       - ShopBundle:Tax
+
+  shop.product_repository:
+   class: ShopBundle\Repository\Product\ProductRepository
+      factory: ['@doctrine', getRepository]
+      arguments:
+        - ShopBundle:Product
+
+  shop.product_create_handler:
+      class: ShopBundle\CommandHandler\Product\CreateProduct
+      arguments:
+          - '@shop.product_repository'
+      tags:
+          - { name: tactician.handler, command: ShopBundle\Command\Product\ProductCommand, bus: queued }
 
   shop.tax_create_handler:
       class: ShopBundle\CommandHandler\Tax\CreateTax
