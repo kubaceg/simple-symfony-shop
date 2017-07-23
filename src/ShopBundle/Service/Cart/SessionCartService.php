@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace ShopBundle\Service\Cart;
 
-use ShopBundle\ReadModel\Product;
+use ShopBundle\ReadModel\CartItem;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class SessionCartService implements CartInterface
@@ -27,10 +27,10 @@ class SessionCartService implements CartInterface
         $this->serializer = $serializer;
     }
 
-    public function addProductToCart(Product $product)
+    public function addProductToCart(CartItem $item)
     {
         $cart = $this->getCartFromSession();
-        $cart[$product->getId()] = $product;
+        $cart[] = $item;
         $this->saveCartInSession($cart);
     }
 
@@ -42,9 +42,9 @@ class SessionCartService implements CartInterface
     public function removeProductsFromCart(array $productIds)
     {
         $cart = $this->getCartFromSession();
-        foreach ($productIds as $productId) {
-            if (isset($cart[$productId])) {
-                unset($cart[$productId]);
+        foreach ($cart as $id => $cartItem) {
+            if (in_array($cartItem->getProduct()->getId(), $productIds)) {
+                unset($cart[$id]);
             }
         }
 
@@ -59,6 +59,20 @@ class SessionCartService implements CartInterface
     public function countProductsInCart(): int
     {
         return count($this->getCartFromSession());
+    }
+
+    public function updateProductQty(int $productId, int $qty)
+    {
+        $cart = $this->getCartProducts();
+
+        foreach ($cart as $id => $item) {
+            if($id === $productId) {
+                $cart[] = new CartItem($item->getProduct(), $qty);
+                unset($cart[$id]);
+            }
+        }
+
+        $this->saveCartInSession($cart);
     }
 
     private function getCartFromSession(): array

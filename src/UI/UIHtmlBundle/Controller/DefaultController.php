@@ -2,6 +2,7 @@
 
 namespace UIHtmlBundle\Controller;
 
+use ShopBundle\ReadModel\CartItem;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use UI\UIHtmlBundle\Form\CartType;
@@ -34,7 +35,8 @@ class DefaultController extends Controller
     public function addToCartAction($productId)
     {
         $product = $this->get('shop.product_query')->getProductById($productId);
-        $this->get('shop.cart_service')->addProductToCart($product);
+        $cartItem = new CartItem($product, 1);
+        $this->get('shop.cart_service')->addProductToCart($cartItem);
 
         return $this->redirectToRoute('ui_html_homepage');
     }
@@ -46,9 +48,10 @@ class DefaultController extends Controller
             $cartService = $this->get('shop.cart_service');
             $productsToDelete = [];
             foreach ($request->get('cart')['items'] as $id => $item) {
-                if ($item['delete'] == 1) {
+                if (isset($item['delete']) && $item['delete'] == 1) {
                     $productsToDelete[] = $id;
                 }
+                $cartService->updateProductQty($id, $item['qty']);
             }
             $cartService->removeProductsFromCart($productsToDelete);
         }

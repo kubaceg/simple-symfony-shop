@@ -26,6 +26,6 @@ class JMSCartSerializer implements CartSerializerInterface
 
     public function deserialize(string $data): array
     {
-        return $this->serializer->deserialize($data, 'array<ShopBundle\ReadModel\Product>', 'json');
+        return $this->serializer->deserialize($data, 'array<ShopBundle\ReadModel\CartItem>', 'json');
     }
 }

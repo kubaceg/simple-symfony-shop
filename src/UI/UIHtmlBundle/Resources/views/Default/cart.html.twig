@@ -14,16 +14,18 @@
                     <th>Category</th>
                     <th>Price</th>
                     <th>Price with tax</th>
+                    <th>Qty</th>
                     <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody>
                     {% for id, item in form.items %}
                         <tr>
-                            <td>{{ products[id].name }}</td>
-                            <td>{{ products[id].categoryName }}</td>
-                            <td>{{ products[id].price | price }}</td>
-                            <td>{{ products[id].priceWithTax | price }} ({{ products[id].taxName }})</td>
+                            <td>{{ products[id].product.name }}</td>
+                            <td>{{ products[id].product.categoryName }}</td>
+                            <td>{{ products[id].lineTotal | price }}</td>
+                            <td>{{ products[id].lineTotalWithTax | price }} ({{ products[id].product.taxName }})</td>
+                            <td>{{ form_widget(item.qty) }}</td>
                             <td>{{ form_widget(item.delete) }}</td>
                         </tr>
                     {% endfor %}
