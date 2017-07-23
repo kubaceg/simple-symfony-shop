@@ -27,8 +27,7 @@ class ShopExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter('shop.currency_code', $config['currency_code']);
-        $container->setParameter('shop.cart_session_key', $config['cart_session_key
-        ']);
+        $container->setParameter('shop.cart_session_key', $config['cart_session_key']);
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)
