@@ -41,7 +41,7 @@ services:
   shop.money_factory:
       class: ShopBundle\Factory\MoneyFactory
       arguments:
-          - "PLN"
+          - "%shop.currency_code%"
 
   shop.product_read_model_factory:
       class: ShopBundle\Factory\ProductReadModelFactory
@@ -58,7 +58,7 @@ services:
       class: ShopBundle\Service\Cart\SessionCartService
       arguments:
         - '@session'
-        - 'cart'
+        - '%shop.cart_session_key%'
         - '@shop.cart_serializer'
 
   shop.cart_serializer:
