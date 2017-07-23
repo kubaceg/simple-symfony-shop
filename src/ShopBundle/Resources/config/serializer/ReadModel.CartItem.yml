@@ -1,0 +1,9 @@
+ShopBundle\ReadModel\CartItem:
+    exclusion_policy: ALL
+    properties:
+        qty:
+            expose: true
+            type: int
+        product:
+            expose: true
+            type: ShopBundle\ReadModel\Product

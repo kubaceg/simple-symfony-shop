@@ -8,6 +8,7 @@ namespace Tests\ShopBundle\Service\Cart;
 
 use Money\Currency;
 use Money\Money;
+use ShopBundle\ReadModel\CartItem;
 use ShopBundle\ReadModel\Product;
 use ShopBundle\Service\Cart\CartSerializerInterface;
 use ShopBundle\Service\Cart\SessionCartService;
@@ -28,8 +29,8 @@ class SessionCartServiceTest extends TestBase
     /** @var Session */
     private $session;
 
-    /** @var Product */
-    private $product;
+    /** @var CartItem */
+    private $cartItem;
 
     /** @var array */
     private $cartWithProduct;
@@ -52,9 +53,9 @@ class SessionCartServiceTest extends TestBase
             ]
         ];
 
-        $this->product = new Product($productData, $price);
+        $this->cartItem = new CartItem(new Product($productData, $price), 1);
         $this->cartService = new SessionCartService($this->session, self::CART_SESSION_KEY, $this->cartSerializer);
-        $this->cartWithProduct = [$this->product->getId() => $this->product];
+        $this->cartWithProduct = [0 => $this->cartItem];
     }
 
     public function tearDown()
@@ -72,7 +73,7 @@ class SessionCartServiceTest extends TestBase
 
         $this->assertNull($this->session->get(self::CART_SESSION_KEY));
 
-        $this->cartService->addProductToCart($this->product);
+        $this->cartService->addProductToCart($this->cartItem);
 
         $cartFromSession = $this->session->get(self::CART_SESSION_KEY);
         $this->assertNotEmpty($cartFromSession);
@@ -121,7 +122,7 @@ class SessionCartServiceTest extends TestBase
 
         $this->session->set(self::CART_SESSION_KEY, json_encode($this->cartWithProduct));
 
-        $this->cartService->removeProductFromCart($this->product->getId());
+        $this->cartService->removeProductFromCart($this->cartItem->getProduct()->getId());
 
         $this->assertEquals(json_encode([]), $this->session->get(self::CART_SESSION_KEY));
     }
