@@ -6,141 +6,212 @@
 namespace Tests\ShopBundle\Service\Cart;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Money\Currency;
 use Money\Money;
 use ShopBundle\Entity\CartItem;
 use ShopBundle\ReadModel\Product;
-use ShopBundle\Service\Cart\CartSerializerInterface;
+use ShopBundle\Service\Cart\CartService;
+use ShopBundle\Service\Cart\CartStorageInterface;
 use ShopBundle\Service\Cart\SessionCartService;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Tests\ShopBundle\TestBase;
 
 class SessionCartServiceTest extends TestBase
 {
-    const CART_SESSION_KEY = 'cart';
-
-    /** @var SessionCartService */
-    private $cartService;
-
-    /** @var CartSerializerInterface */
-    private $cartSerializer;
-
-    /** @var Session */
-    private $session;
-
     /** @var CartItem */
     private $cartItem;
 
-    /** @var array */
+    /** @var CartItem */
+    private $cartItem2;
+
+    /** @var ArrayCollection */
     private $cartWithProduct;
+
+    /** @var ArrayCollection */
+    private $cartWithBothProducts;
+
+    /** @var CartStorageInterface */
+    private $cartStorage;
+
+    /** @var CartService */
+    private $cartService;
 
     public function setUp()
     {
-        $this->cartSerializer = $this->createMock(CartSerializerInterface::class);
-        $this->session = new Session(new MockArraySessionStorage());
-
         $price = new Money(10000, new Currency('PLN'));
         $productData = [
-            'id' => 1,
+            'id' => 2,
             'name' => 'Test product',
             'tax' => [
                 'name' => 'Tax',
-                'rate' => 23.00
+                'rate' => 23.00,
             ],
             'category' => [
-                'name' => 'Category'
-            ]
+                'name' => 'Category',
+            ],
+        ];
+        $productData2 = [
+            'id' => 3,
+            'name' => 'Test product3',
+            'tax' => [
+                'name' => 'Tax',
+                'rate' => 23.00,
+            ],
+            'category' => [
+                'name' => 'Category',
+            ],
         ];
 
         $this->cartItem = new CartItem(new Product($productData, $price), 1);
-        $this->cartService = new SessionCartService($this->session, self::CART_SESSION_KEY, $this->cartSerializer);
-        $this->cartWithProduct = [0 => $this->cartItem];
+        $this->cartItem2 = new CartItem(new Product($productData2, $price), 1);
+        $this->cartStorage = $this->getMockBuilder(CartStorageInterface::class)->getMock();
+        $this->cartWithProduct = new ArrayCollection([2 => $this->cartItem]);
+        $this->cartWithBothProducts = new ArrayCollection([2 => $this->cartItem, 3 => $this->cartItem2]);
+        $this->cartService = new CartService($this->cartStorage);
     }
 
     public function tearDown()
     {
-        unset($this->session);
-        unset($this->cartSerializer);
+        unset($this->cartStorage);
     }
 
     public function testAddProductToCart()
     {
-        $this->cartSerializer
-            ->method('serialize')
-            ->with($this->cartWithProduct)
-            ->willReturn(json_encode($this->cartWithProduct));
-
-        $this->assertNull($this->session->get(self::CART_SESSION_KEY));
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('getCart')
+            ->willReturn(new ArrayCollection());
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('saveCart')
+            ->with($this->cartWithProduct);
 
         $this->cartService->addProductToCart($this->cartItem);
 
-        $cartFromSession = $this->session->get(self::CART_SESSION_KEY);
-        $this->assertNotEmpty($cartFromSession);
-        $this->assertEquals(json_encode($this->cartWithProduct), $cartFromSession);
+        $this->assertTrue(true);
     }
 
-    public function testGetEmptyCart()
+    public function testAddProductToNonEmptyCart()
     {
-        $this->assertInternalType('array', $this->cartService->getCartProducts());
-        $this->assertEmpty($this->cartService->getCartProducts());
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('getCart')
+            ->willReturn($this->cartWithProduct);
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('saveCart')
+            ->with($this->cartWithBothProducts);
+
+        $this->cartService->addProductToCart($this->cartItem2);
+
+        $this->assertTrue(true);
+    }
+
+    public function testAddExistingProductToCart()
+    {
+        $cartItemWithIncrementedQty = new CartItem($this->cartItem->getProduct(), 2);
+        $cartWithIncrementedQty = new ArrayCollection([2 => $cartItemWithIncrementedQty, 3 => $this->cartItem2]);
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('getCart')
+            ->willReturn($this->cartWithBothProducts);
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('saveCart')
+            ->with($cartWithIncrementedQty);
+
+        $this->cartService->addProductToCart($this->cartItem);
+
+        $this->assertTrue(true);
     }
 
     public function testGetCartProducts()
     {
-        $this->cartSerializer
-            ->method('deserialize')
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('getCart')
             ->willReturn($this->cartWithProduct);
-        $this->session->set(self::CART_SESSION_KEY, json_encode($this->cartWithProduct));
 
-        $this->assertEquals($this->cartWithProduct, $this->cartService->getCartProducts());
+        $cart = $this->cartService->getCartProducts();
+
+        $this->assertEquals($this->cartWithProduct, $cart);
     }
 
-    public function testCountCartWithEmpty()
+    public function testGetCountProductsInCart()
     {
-        $this->assertEquals(0, $this->cartService->countProductsInCart());
-    }
-
-    public function testCountCartWithPopulatedCart()
-    {
-        $this->session->set(self::CART_SESSION_KEY, json_encode($this->cartWithProduct));
-        $this->cartSerializer
-            ->method('deserialize')
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('getCart')
             ->willReturn($this->cartWithProduct);
-        $this->assertEquals(1, $this->cartService->countProductsInCart());
+
+        $count = $this->cartService->countProductsInCart();
+
+        $this->assertEquals($count, 1);
     }
 
     public function testRemoveProductFromCart()
     {
-        $this->cartSerializer
-            ->method('deserialize')
-            ->willReturn($this->cartWithProduct);
-        $this->cartSerializer
-            ->method('serialize')
-            ->with([])
-            ->willReturn(json_encode([]));
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('getCart')
+            ->willReturn($this->cartWithBothProducts);
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('saveCart')
+            ->with($this->cartWithProduct);
 
-        $this->session->set(self::CART_SESSION_KEY, json_encode($this->cartWithProduct));
+        $this->cartService->removeProductFromCart(3);
 
-        $this->cartService->removeProductFromCart($this->cartItem->getProduct()->getId());
-
-        $this->assertEquals(json_encode([]), $this->session->get(self::CART_SESSION_KEY));
+        $this->assertTrue(true);
     }
 
-    public function testRemoveNonExistingProductFromCart()
+    public function testRemoveProductsFromCart()
     {
-        $this->cartSerializer
-            ->method('deserialize')
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('getCart')
+            ->willReturn($this->cartWithBothProducts);
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('saveCart')
+            ->with(new ArrayCollection());
+
+        $this->cartService->removeProductsFromCart([2,3]);
+
+        $this->assertTrue(true);
+    }
+
+    public function testUpdateExistingProductQty()
+    {
+        $cartItemWithIncrementedQty = new CartItem($this->cartItem->getProduct(), 5);
+        $cartWithIncrementedQty = new ArrayCollection([2 => $cartItemWithIncrementedQty]);
+
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('getCart')
             ->willReturn($this->cartWithProduct);
-        $this->cartSerializer
-            ->method('serialize')
-            ->with($this->cartWithProduct)
-            ->willReturn(json_encode($this->cartWithProduct));
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('saveCart')
+            ->with($cartWithIncrementedQty);
 
-        $this->session->set(self::CART_SESSION_KEY, json_encode($this->cartWithProduct));
+        $this->cartService->updateProductQty($cartItemWithIncrementedQty->getProduct()->getId(), 5);
 
-        $this->cartService->removeProductFromCart(2);
+        $this->assertTrue(true);
+    }
 
-        $this->assertEquals(json_encode($this->cartWithProduct), $this->session->get(self::CART_SESSION_KEY));
+    public function testUpdateNonExistingProductQty()
+    {
+        $this->cartStorage
+            ->expects($this->once())
+            ->method('getCart')
+            ->willReturn($this->cartWithProduct);
+        $this->cartStorage
+            ->expects($this->never())
+            ->method('saveCart');
+
+        $this->cartService->updateProductQty(123, 5);
+
+        $this->assertTrue(true);
     }
 }

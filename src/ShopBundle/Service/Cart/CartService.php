@@ -21,35 +21,51 @@ class CartService implements CartInterface
 
     public function addProductToCart(CartItem $item)
     {
-        $cart = $this->getCartFromSession();
+        $cart = $this->cartStorage->getCart();
 
+        if ($existingItem = $cart->get($item->getProduct()->getId())) {
+            $newQty = $existingItem->getQty() + $item->getQty();
+            $item = new CartItem($item->getProduct(), $newQty);
+        }
         $cart->set($item->getProduct()->getId(), $item);
 
-        $this->saveCartInSession($cart);
+        $this->cartStorage->saveCart($cart);
     }
 
     public function removeProductFromCart(int $productId)
     {
-        // TODO: Implement removeProductFromCart() method.
+        $this->removeProductsFromCart([$productId]);
     }
 
     public function removeProductsFromCart(array $productIds)
     {
-        // TODO: Implement removeProductsFromCart() method.
+        $cart = $this->cartStorage->getCart();
+
+        foreach ($productIds as $productId) {
+            $cart->remove($productId);
+        }
+
+        $this->cartStorage->saveCart($cart);
     }
 
     public function getCartProducts(): ArrayCollection
     {
-        // TODO: Implement getCartProducts() method.
+        return $this->cartStorage->getCart();
     }
 
     public function countProductsInCart(): int
     {
-        // TODO: Implement countProductsInCart() method.
+        return count($this->cartStorage->getCart());
     }
 
     public function updateProductQty(int $productId, int $qty)
     {
-        // TODO: Implement updateProductQty() method.
+        $cart = $this->cartStorage->getCart();
+
+        if($item = $cart->get($productId)) {
+            $item = new CartItem($item->getProduct(), $qty);
+            $cart->set($productId, $item);
+            $this->cartStorage->saveCart($cart);
+        }
     }
 }
