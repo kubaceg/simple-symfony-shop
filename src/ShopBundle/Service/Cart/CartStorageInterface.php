@@ -6,12 +6,11 @@ declare(strict_types=1);
 
 namespace ShopBundle\Service\Cart;
 
-
 use Doctrine\Common\Collections\ArrayCollection;
 
-interface CartSerializerInterface
+interface CartStorageInterface
 {
-    public function serialize(ArrayCollection $data): string;
+    public function saveCart(ArrayCollection $cart);
 
-    public function deserialize(string $data): ArrayCollection;
+    public function getCart(): ArrayCollection;
 }

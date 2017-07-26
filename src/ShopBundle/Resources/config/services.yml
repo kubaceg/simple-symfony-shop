@@ -55,11 +55,16 @@ services:
         - '@shop.product_read_model_factory'
 
   shop.cart_service:
-      class: ShopBundle\Service\Cart\SessionCartService
+      class: ShopBundle\Service\Cart\CartService
       arguments:
-        - '@session'
-        - '%shop.cart_session_key%'
-        - '@shop.cart_serializer'
+        - '@shop.session_cart_storage'
+
+  shop.session_cart_storage:
+    class: ShopBundle\Service\Cart\SessionCartStorage
+    arguments:
+      - '@session'
+      - '%shop.cart_session_key%'
+      - '@shop.cart_serializer'
 
   shop.cart_serializer:
       class: ShopBundle\Service\Cart\JMSCartSerializer

@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace ShopBundle\Service\Cart;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use ShopBundle\Entity\CartItem;
 
 interface CartInterface
@@ -17,7 +18,7 @@ interface CartInterface
 
     public function removeProductsFromCart(array $productIds);
 
-    public function getCartProducts(): array;
+    public function getCartProducts(): ArrayCollection;
 
     public function countProductsInCart(): int;
 
