@@ -12,9 +12,9 @@ class CartItems
 {
     private $items;
 
-    public function __construct(array $items)
+    public function __construct(ArrayCollection $items)
     {
-        $this->items = new ArrayCollection($items);
+        $this->items = $items;
     }
 
     /**
