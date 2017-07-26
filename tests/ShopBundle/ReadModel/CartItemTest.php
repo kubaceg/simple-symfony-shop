@@ -9,7 +9,7 @@ namespace Tests\ShopBundle\ReadModel;
 use Money\Currency;
 use Money\Money;
 use PHPUnit\Framework\TestCase;
-use ShopBundle\ReadModel\CartItem;
+use ShopBundle\Entity\CartItem;
 use ShopBundle\ReadModel\Product;
 
 class CartItemTest extends TestCase

@@ -2,7 +2,7 @@
 
 namespace UIHtmlBundle\Controller;
 
-use ShopBundle\ReadModel\CartItem;
+use ShopBundle\Entity\CartItem;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use UI\UIHtmlBundle\Form\CartType;

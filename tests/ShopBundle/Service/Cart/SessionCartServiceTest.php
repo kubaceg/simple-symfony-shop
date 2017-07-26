@@ -8,7 +8,7 @@ namespace Tests\ShopBundle\Service\Cart;
 
 use Money\Currency;
 use Money\Money;
-use ShopBundle\ReadModel\CartItem;
+use ShopBundle\Entity\CartItem;
 use ShopBundle\ReadModel\Product;
 use ShopBundle\Service\Cart\CartSerializerInterface;
 use ShopBundle\Service\Cart\SessionCartService;

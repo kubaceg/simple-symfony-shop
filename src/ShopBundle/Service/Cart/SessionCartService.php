@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 namespace ShopBundle\Service\Cart;
 
-use ShopBundle\ReadModel\CartItem;
+use ShopBundle\Entity\CartItem;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class SessionCartService implements CartInterface

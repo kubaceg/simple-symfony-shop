@@ -1,4 +1,4 @@
-ShopBundle\ReadModel\CartItem:
+ShopBundle\Entity\CartItem:
     exclusion_policy: ALL
     properties:
         qty:

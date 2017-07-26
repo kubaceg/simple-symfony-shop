@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace ShopBundle\Service\Cart;
 
 
-use ShopBundle\ReadModel\CartItem;
+use ShopBundle\Entity\CartItem;
 
 interface CartInterface
 {

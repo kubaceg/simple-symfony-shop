@@ -3,9 +3,10 @@
  * @author Jakub Cegiełka <kuba.ceg@gmail.com>
  */
 
-namespace ShopBundle\ReadModel;
+namespace ShopBundle\Entity;
 
 use Money\Money;
+use ShopBundle\ReadModel\Product;
 
 class CartItem
 {
