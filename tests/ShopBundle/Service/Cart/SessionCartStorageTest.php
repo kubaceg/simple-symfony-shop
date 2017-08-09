@@ -7,7 +7,9 @@ namespace Tests\ShopBundle\Service\Cart;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Tests\Fixtures\Discriminator\Car;
 use PHPUnit\Framework\TestCase;
+use ShopBundle\Entity\Cart;
 use ShopBundle\Service\Cart\CartSerializerInterface;
 use ShopBundle\Service\Cart\CartStorageInterface;
 use ShopBundle\Service\Cart\SessionCartStorage;
@@ -40,29 +42,30 @@ class SessionCartStorageTest extends TestCase
 
         $cart = $this->cartStorage->getCart();
 
-        $this->assertInstanceOf(ArrayCollection::class, $cart);
+        $this->assertInstanceOf(Cart::class, $cart);
         $this->assertTrue($cart->isEmpty());
     }
 
     public function testGetNonEmptyCartFromSession()
     {
         $cartArray = ["element1"];
+        $expectedCart = new Cart(new ArrayCollection($cartArray));
         $this->session->set(self::CART_SESSION_KEY, json_encode($cartArray));
 
         $this->cartSerializer
             ->method('deserialize')
             ->with(json_encode($cartArray))
-            ->willReturn(new ArrayCollection($cartArray));
+            ->willReturn(new Cart(new ArrayCollection($cartArray)));
 
         $cart = $this->cartStorage->getCart();
 
-        $this->assertInstanceOf(ArrayCollection::class, $cart);
-        $this->assertEquals(new ArrayCollection($cartArray), $cart);
+        $this->assertInstanceOf(Cart::class, $cart);
+        $this->assertEquals($expectedCart, $cart);
     }
 
     public function testSaveCart()
     {
-        $cart = new ArrayCollection(["element1"]);
+        $cart = new Cart(new ArrayCollection(["element1"]));
         $serializedCart = json_encode($cart);
         $this->cartSerializer
             ->method('serialize')

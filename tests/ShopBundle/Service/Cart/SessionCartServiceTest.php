@@ -9,6 +9,7 @@ namespace Tests\ShopBundle\Service\Cart;
 use Doctrine\Common\Collections\ArrayCollection;
 use Money\Currency;
 use Money\Money;
+use ShopBundle\Entity\Cart;
 use ShopBundle\Entity\CartItem;
 use ShopBundle\ReadModel\Product;
 use ShopBundle\Service\Cart\CartService;
@@ -35,6 +36,9 @@ class SessionCartServiceTest extends TestBase
 
     /** @var CartService */
     private $cartService;
+
+    /** @var Cart */
+    private $cart;
 
     public function setUp()
     {
@@ -65,9 +69,10 @@ class SessionCartServiceTest extends TestBase
         $this->cartItem = new CartItem(new Product($productData, $price), 1);
         $this->cartItem2 = new CartItem(new Product($productData2, $price), 1);
         $this->cartStorage = $this->getMockBuilder(CartStorageInterface::class)->getMock();
-        $this->cartWithProduct = new ArrayCollection([2 => $this->cartItem]);
-        $this->cartWithBothProducts = new ArrayCollection([2 => $this->cartItem, 3 => $this->cartItem2]);
+        $this->cartWithProduct = new Cart(new ArrayCollection([2 => $this->cartItem]));
+        $this->cartWithBothProducts = new Cart(new ArrayCollection([2 => $this->cartItem, 3 => $this->cartItem2]));
         $this->cartService = new CartService($this->cartStorage);
+        $this->cart = new Cart();
     }
 
     public function tearDown()
@@ -80,7 +85,7 @@ class SessionCartServiceTest extends TestBase
         $this->cartStorage
             ->expects($this->once())
             ->method('getCart')
-            ->willReturn(new ArrayCollection());
+            ->willReturn($this->cart);
         $this->cartStorage
             ->expects($this->once())
             ->method('saveCart')
@@ -110,7 +115,7 @@ class SessionCartServiceTest extends TestBase
     public function testAddExistingProductToCart()
     {
         $cartItemWithIncrementedQty = new CartItem($this->cartItem->getProduct(), 2);
-        $cartWithIncrementedQty = new ArrayCollection([2 => $cartItemWithIncrementedQty, 3 => $this->cartItem2]);
+        $cartWithIncrementedQty = new Cart(new ArrayCollection([2 => $cartItemWithIncrementedQty, 3 => $this->cartItem2]));
         $this->cartStorage
             ->expects($this->once())
             ->method('getCart')
@@ -134,7 +139,7 @@ class SessionCartServiceTest extends TestBase
 
         $cart = $this->cartService->getCartProducts();
 
-        $this->assertEquals($this->cartWithProduct, $cart);
+        $this->assertEquals($this->cartWithProduct->getItems(), $cart);
     }
 
     public function testGetCountProductsInCart()
@@ -174,7 +179,7 @@ class SessionCartServiceTest extends TestBase
         $this->cartStorage
             ->expects($this->once())
             ->method('saveCart')
-            ->with(new ArrayCollection());
+            ->with($this->cart);
 
         $this->cartService->removeProductsFromCart([2,3]);
 
@@ -184,7 +189,7 @@ class SessionCartServiceTest extends TestBase
     public function testUpdateExistingProductQty()
     {
         $cartItemWithIncrementedQty = new CartItem($this->cartItem->getProduct(), 5);
-        $cartWithIncrementedQty = new ArrayCollection([2 => $cartItemWithIncrementedQty]);
+        $cartWithIncrementedQty = new Cart(new ArrayCollection([2 => $cartItemWithIncrementedQty]));
 
         $this->cartStorage
             ->expects($this->once())

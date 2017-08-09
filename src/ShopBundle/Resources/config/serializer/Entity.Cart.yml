@@ -1,0 +1,6 @@
+ShopBundle\Entity\Cart:
+    exclusion_policy: ALL
+    properties:
+        items:
+            expose: true
+            type: ArrayCollection<int, ShopBundle\Entity\CartItem>

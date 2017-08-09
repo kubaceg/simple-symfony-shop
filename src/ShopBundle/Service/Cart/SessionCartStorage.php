@@ -7,6 +7,7 @@ namespace ShopBundle\Service\Cart;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
+use ShopBundle\Entity\Cart;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class SessionCartStorage implements CartStorageInterface
@@ -27,18 +28,18 @@ class SessionCartStorage implements CartStorageInterface
         $this->serializer = $serializer;
     }
 
-    public function saveCart(ArrayCollection $cart)
+    public function saveCart(Cart $cart)
     {
         $cart = $this->serializer->serialize($cart);
         $this->session->set($this->cartSessionKey, $cart);
     }
 
-    public function getCart(): ArrayCollection
+    public function getCart(): Cart
     {
         $cart = $this->session->get($this->cartSessionKey);
 
         if (is_null($cart)) {
-            return new ArrayCollection();
+            return new Cart();
         }
 
         return $this->serializer->deserialize($cart);

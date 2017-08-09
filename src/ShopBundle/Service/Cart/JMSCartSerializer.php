@@ -7,8 +7,8 @@ declare(strict_types=1);
 namespace ShopBundle\Service\Cart;
 
 
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Serializer;
+use ShopBundle\Entity\Cart;
 
 class JMSCartSerializer implements CartSerializerInterface
 {
@@ -20,13 +20,13 @@ class JMSCartSerializer implements CartSerializerInterface
         $this->serializer = $serializer;
     }
 
-    public function serialize(ArrayCollection $data): string
+    public function serialize(Cart $data): string
     {
         return $this->serializer->serialize($data, 'json');
     }
 
-    public function deserialize(string $data): ArrayCollection
+    public function deserialize(string $data): Cart
     {
-        return new ArrayCollection($this->serializer->deserialize($data, 'ArrayCollection<int, ShopBundle\Entity\CartItem>', 'json'));
+        return $this->serializer->deserialize($data, '      ShopBundle\Entity\Cart', 'json');
     }
 }

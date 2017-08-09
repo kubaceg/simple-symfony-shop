@@ -22,12 +22,13 @@ class CartService implements CartInterface
     public function addProductToCart(CartItem $item)
     {
         $cart = $this->cartStorage->getCart();
-
-        if ($existingItem = $cart->get($item->getProduct()->getId())) {
+        $items = $cart->getItems();
+        if ($existingItem = $items->get($item->getProduct()->getId())) {
             $newQty = $existingItem->getQty() + $item->getQty();
             $item = new CartItem($item->getProduct(), $newQty);
         }
-        $cart->set($item->getProduct()->getId(), $item);
+        $items->set($item->getProduct()->getId(), $item);
+        $cart->setItems($items);
 
         $this->cartStorage->saveCart($cart);
     }
@@ -40,9 +41,10 @@ class CartService implements CartInterface
     public function removeProductsFromCart(array $productIds)
     {
         $cart = $this->cartStorage->getCart();
-
+        $items = $cart->getItems();
         foreach ($productIds as $productId) {
-            $cart->remove($productId);
+            $items->remove($productId);
+            $cart->setItems($items);
         }
 
         $this->cartStorage->saveCart($cart);
@@ -50,21 +52,22 @@ class CartService implements CartInterface
 
     public function getCartProducts(): ArrayCollection
     {
-        return $this->cartStorage->getCart();
+        return $this->cartStorage->getCart()->getItems();
     }
 
     public function countProductsInCart(): int
     {
-        return count($this->cartStorage->getCart());
+        return count($this->cartStorage->getCart()->getItems());
     }
 
     public function updateProductQty(int $productId, int $qty)
     {
         $cart = $this->cartStorage->getCart();
-
-        if($item = $cart->get($productId)) {
+        $items = $cart->getItems();
+        if($item = $items->get($productId)) {
             $item = new CartItem($item->getProduct(), $qty);
-            $cart->set($productId, $item);
+            $items->set($productId, $item);
+            $cart->setItems($items);
             $this->cartStorage->saveCart($cart);
         }
     }

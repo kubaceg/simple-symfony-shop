@@ -6,11 +6,11 @@ declare(strict_types=1);
 
 namespace ShopBundle\Service\Cart;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use ShopBundle\Entity\Cart;
 
 interface CartStorageInterface
 {
-    public function saveCart(ArrayCollection $cart);
+    public function saveCart(Cart $cart);
 
-    public function getCart(): ArrayCollection;
+    public function getCart(): Cart;
 }
