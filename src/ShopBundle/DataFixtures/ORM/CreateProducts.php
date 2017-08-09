@@ -8,6 +8,7 @@ namespace ShopBundle\DataFixtures\ORM;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Faker\Factory;
 use ShopBundle\Entity\Category;
 use ShopBundle\Entity\Product;
 use ShopBundle\Entity\Tax;
@@ -48,6 +49,13 @@ class CreateProducts extends AbstractFixture implements FixtureInterface
 
         $manager->persist($product1);
         $manager->persist($product2);
+
+        $faker = Factory::create();
+        for($i = 0; $i < 30; $i++) {
+            $product = new Product($faker->sentence(3), $faker->numberBetween(100, 100000), $tax1, $category1);
+            $manager->persist($product);
+        }
+
         $manager->flush();
     }
 }
