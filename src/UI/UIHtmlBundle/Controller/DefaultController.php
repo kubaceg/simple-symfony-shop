@@ -14,7 +14,6 @@ class DefaultController extends Controller
     {
         $products = $this->get('shop.product_query')->getAllProducts();
         $cartCount = $this->get('shop.cart_service')->countProductsInCart();
-        var_dump($this->get('shop.cart_service')->getCartProducts());
 
         return $this->render('@UIHtml/Default/list.html.twig', ['products' => $products, 'cartCount' => $cartCount]);
     }
