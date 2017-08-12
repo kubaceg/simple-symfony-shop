@@ -3,6 +3,7 @@
 namespace UIHtmlBundle\Controller;
 
 use ShopBundle\Entity\CartItem;
+use ShopBundle\Query\AllProductsQuery;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use UI\UIHtmlBundle\Form\CartType;
@@ -10,12 +11,19 @@ use UI\UIHtmlBundle\Model\CartItems;
 
 class DefaultController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $products = $this->get('shop.product_query')->getAllProducts();
+        $page = $request->get('page', 1);
+        $limit = $request->get('limit', 6);
+        $allProductsQuery = new AllProductsQuery($page, $limit);
+        $products = $this->get('tactician.commandbus.default')->handle($allProductsQuery);
         $cartCount = $this->get('shop.cart_service')->countProductsInCart();
 
-        return $this->render('@UIHtml/Default/list.html.twig', ['products' => $products, 'cartCount' => $cartCount]);
+        $total = $this->get('shop.product_repository')->countPages($limit);
+
+        return $this->render('@UIHtml/Default/list.html.twig',
+            ['products' => $products, 'cartCount' => $cartCount, 'page' => $page, 'totalPages' => $total, 'limit' => $limit]
+        );
     }
 
     public function cartAction()

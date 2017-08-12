@@ -1,6 +1,9 @@
 ui_html_homepage:
     path:     /
     defaults: { _controller: UIHtmlBundle:Default:index }
+    requirements:
+      page: '\d+'
+      limit: '\d+'
 
 ui_html_cart:
     path:     /cart

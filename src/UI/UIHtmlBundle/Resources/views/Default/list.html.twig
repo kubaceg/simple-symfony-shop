@@ -28,4 +28,11 @@
         </div>
     {% endfor %}
     </div>
+    {% include '@UIHtml/Default/pagination.html.twig' with {
+    limit: limit,
+    currentPage: page,
+    paginationPath: "?page=",
+    lastPage: totalPages,
+    showAlwaysFirstAndLast: false
+    } only %}
 {% endblock %}

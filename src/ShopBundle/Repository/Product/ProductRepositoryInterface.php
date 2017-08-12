@@ -14,4 +14,6 @@ interface ProductRepositoryInterface
     public function save(Product $product): void;
 
     public function findByName(string $name): ?Product;
+
+    public function findAllProducts(int $page, int $limit): array;
 }
