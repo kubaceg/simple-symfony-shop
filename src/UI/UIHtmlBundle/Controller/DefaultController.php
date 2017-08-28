@@ -19,10 +19,8 @@ class DefaultController extends Controller
         $products = $this->get('tactician.commandbus.default')->handle($allProductsQuery);
         $cartCount = $this->get('shop.cart_service')->countProductsInCart();
 
-        $total = $this->get('shop.product_repository')->countPages($limit);
-
         return $this->render('@UIHtml/Default/list.html.twig',
-            ['products' => $products, 'cartCount' => $cartCount, 'page' => $page, 'totalPages' => $total, 'limit' => $limit]
+            ['paginatedProducts' => $products, 'cartCount' => $cartCount]
         );
     }
 

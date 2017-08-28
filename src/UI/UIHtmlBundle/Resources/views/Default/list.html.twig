@@ -6,7 +6,7 @@
 
 {% block body %}
     <div class="row">
-    {% for product in products %}
+    {% for product in paginatedProducts.products %}
         <div class="col-sm-4">
             <div class="panel panel-primary">
                 <div class="panel-heading">{{ product.name }}</div>
@@ -29,10 +29,10 @@
     {% endfor %}
     </div>
     {% include '@UIHtml/Default/pagination.html.twig' with {
-    limit: limit,
-    currentPage: page,
+    limit: paginatedProducts.limit,
+    currentPage: paginatedProducts.page,
     paginationPath: "?page=",
-    lastPage: totalPages,
+    lastPage: paginatedProducts.lastPage,
     showAlwaysFirstAndLast: false
     } only %}
 {% endblock %}

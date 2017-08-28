@@ -8,6 +8,7 @@ namespace ShopBundle\QueryHandler;
 
 use ShopBundle\Factory\ProductReadModelFactory;
 use ShopBundle\Query\AllProductsQuery;
+use ShopBundle\ReadModel\PaginatedProducts;
 use ShopBundle\Repository\Product\ProductRepositoryInterface;
 
 class AllProducts
@@ -24,17 +25,19 @@ class AllProducts
 
     /**
      * @param AllProductsQuery $query
-     * @return array
+     * @return PaginatedProducts
      */
-    public function handle(AllProductsQuery $query)
+    public function handle(AllProductsQuery $query): PaginatedProducts
     {
-        $productsArray = [];
         $result = $this->repository->findAllProducts($query->getPage(), $query->getLimit());
 
-        foreach ($result as $item) {
-            $productsArray[] = $this->productFactory->get($item);
+        $products = [];
+        foreach ($result->getProducts() as $item) {
+            $products[] = $this->productFactory->get($item);
         }
 
-        return $productsArray;
+        $paginated = new PaginatedProducts($products, $query->getPage(), $query->getLimit(), $result->getLastPage());
+
+        return $paginated;
     }
 }

@@ -5,7 +5,9 @@ namespace ShopBundle\Repository\Product;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use ShopBundle\Entity\Product;
+use ShopBundle\ReadModel\PaginatedProducts;
 
 class ProductRepository extends EntityRepository implements ProductRepositoryInterface
 {
@@ -27,18 +29,25 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
         return $qb->getQuery()->getOneOrNullResult();
     }
 
-    public function findAllProducts(int $page, int $limit): array
+    public function findAllProducts(int $page, int $limit): PaginatedProducts
     {
         $qb =  $this->_em->createQueryBuilder()
             ->select('p', 't', 'c')
             ->from("ShopBundle:Product", 'p')
             ->leftJoin('p.tax', 't')
-            ->leftJoin('p.category', 'c')
+            ->leftJoin('p.category', 'c');
+
+        $paginator = new Paginator($qb);
+        $paginator->getQuery()
+            ->setHydrationMode(Query::HYDRATE_ARRAY)
             ->setFirstResult($limit * ($page - 1))
             ->setMaxResults($limit);
 
+        $pages = intval(ceil($paginator->count() / $limit));
 
-        return $qb->getQuery()->getResult(Query::HYDRATE_ARRAY);
+        $productPaginator = new PaginatedProducts($paginator->getIterator()->getArrayCopy(), $page, $limit, $pages);
+
+        return $productPaginator;
     }
 
     public function countPages($limit): int

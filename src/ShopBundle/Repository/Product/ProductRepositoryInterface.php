@@ -8,6 +8,7 @@ namespace ShopBundle\Repository\Product;
 
 
 use ShopBundle\Entity\Product;
+use ShopBundle\ReadModel\PaginatedProducts;
 
 interface ProductRepositoryInterface
 {
@@ -15,5 +16,5 @@ interface ProductRepositoryInterface
 
     public function findByName(string $name): ?Product;
 
-    public function findAllProducts(int $page, int $limit): array;
+    public function findAllProducts(int $page, int $limit): PaginatedProducts;
 }
