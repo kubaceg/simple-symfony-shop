@@ -16,11 +16,17 @@ class CreateProduct
     /** @var ProductRepositoryInterface */
     private $repository;
 
+    /**
+     * @param ProductRepositoryInterface $repository
+     */
     public function __construct(ProductRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
 
+    /**
+     * @param ProductCommand $command
+     */
     public function handle(ProductCommand $command): void
     {
         $productExists = $this->repository->findByName($command->getName());
@@ -35,8 +41,13 @@ class CreateProduct
         $this->repository->save($product);
     }
 
+    /**
+     * @param float
+     *
+     * @return int
+     */
     private function convertPriceToInteger(float $price): int
     {
-        return bcmul($price, 100, 0);
+        return intval(bcmul($price, 100, 0));
     }
 }

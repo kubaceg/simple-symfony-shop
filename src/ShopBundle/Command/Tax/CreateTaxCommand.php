@@ -11,7 +11,7 @@ class CreateTaxCommand
     /** @var string */
     private $name;
 
-    /** @var $rate */
+    /** @var float */
     private $rate;
 
     public function __construct(string $name, float $rate)
