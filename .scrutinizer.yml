@@ -1,6 +1,6 @@
 build:
   dependencies:
-    ovveride:
+    override:
       - 'cp app/config/parameters.yml.dist app/config/parameters.yml'
       - 'php bin/console d:d:c -e=test'
       - 'php bin/console d:s:u -e=test --force'
