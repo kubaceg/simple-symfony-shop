@@ -19,6 +19,6 @@ class PaginatedProductsTest extends TestCase
         $this->assertEquals([], $paginated->getProducts());
         $this->assertEquals(1, $paginated->getPage());
         $this->assertEquals(6, $paginated->getLimit());
-        $this->assertEquals(20, $paginated->getTotal());
+        $this->assertEquals(20, $paginated->getLastPage());
     }
 }
