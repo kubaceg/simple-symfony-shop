@@ -1,15 +1,10 @@
 build:
-    tests:
-		before:
-			- 'php bin/console d:d:c -e=test'
-			- 'php bin/console d:s:u -e=test --force'
-        override:
-            -
-                command: 'php bin/phpunit --coverage-clover=coverage'
-                coverage:
-                    file: 'coverage'
-                    format: 'clover'
-
+  tests:
+    before:
+      - 'php bin/console d:d:c -e=test'
+      - 'php bin/console d:s:u -e=test --force'
+    override:
+      - { command: 'php bin/phpunit --coverage-clover=coverage', coverage: { file: coverage, format: clover } }
 filter:
-    excluded_paths:
-        - var/*
+  excluded_paths:
+    - 'var/*'
